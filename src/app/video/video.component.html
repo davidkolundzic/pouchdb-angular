@@ -1,0 +1,36 @@
+<!-- BUTTONS -->
+<div class="row">
+  <div class="col-12 mt-3 mb-3">
+    <div class="btn btn-info btn-sm mr-2" (click)="fetchFromNetwork(videos[3])"> Play Video From Network</div>
+    <div class="btn btn-info btn-sm mr-2" (click)="fetchAndStoreFromNetwork(videos[3], index=3)"> Save video to Indexeddb Video</div>
+
+  </div>
+</div>
+
+<!-- MESSAGE -->
+<div class="row">
+  <div class="col-12 mb-3">
+    <span class="badge badge-dark p-2"> {{message}} </span>
+  </div>
+</div>
+<div class="row">
+  <div class="col-3">
+    <div *ngIf="videopath">
+      <video class="img-fluid" id="myvideo" controls>
+        <source [src]="videopath" type="video/mp4">
+      </video>
+    </div>
+  </div>
+</div>
+<!-- text -->
+<div class="row h-75">
+  <div class="col-12 h-100">
+    <div class="alert alert-primary ">
+      <div class="card ">
+        <div class="card-body">
+          <pre>{{text}}</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
