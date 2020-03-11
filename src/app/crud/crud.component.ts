@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import PouchDB from 'pouchdb';
 import { JOB } from './../data';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-crud',
@@ -13,7 +14,7 @@ export class CRUDComponent implements OnInit {
   message: string;
   text: {};
 
-  
+
   public constructor() {
     this.db = new PouchDB('testdb');
 
@@ -34,7 +35,7 @@ export class CRUDComponent implements OnInit {
       .put(this.job)
       .then(res => {
         this.message = 'Job added succesfully';
-        this.text = JSON.stringify( res, null, '\t');
+        this.text = JSON.stringify(res, null, '\t');
       })
       .catch(err => {
         this.message = JSON.stringify(err);
@@ -64,4 +65,36 @@ export class CRUDComponent implements OnInit {
         this.text = JSON.stringify(res, null, '\t');
       });
   }
+  deleteJob() {
+    this.text = '';
+    this.message = '';
+    this.db
+      .get('job_001')
+      .then(doc => {
+        //* Delete job
+        return this.db.remove(doc);
+      })
+      .then(res => {
+        this.text = JSON.stringify(res, null, '\t');
+        this.message = 'Job deleted';
+      })
+      .catch(err => this.message = err);
+  }
+  compactDB(){
+    this.text= '';
+    this.message = '';
+    if (this.db) {
+      this.db
+        .compact()
+        .then(res =>{
+          this.message = 'Database compacted';
+          this.text = JSON.stringify(res, null, '\n');
+        })
+        .catch(err => this.message=err)
+    } else {
+      this.message = 'Please open the databse first';
+    }
+  }
+
+
 }
