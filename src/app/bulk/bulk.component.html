@@ -1,0 +1,31 @@
+<!-- BUTTONS -->
+<div class="row">
+  <div class="col-12 mt-3 mb-3">
+    <div class="btn btn-info btn-sm mr-2" (click)="addMultipleDocs()"> Add Multiple Docs</div>
+    <div class="btn btn-info btn-sm mr-2" (click)="getAllDocsIdsAndRevs()"> Get All Docs (id/rev only)</div>
+    <div class="btn btn-info btn-sm mr-2" (click)="getAllDocuments()"> Get All Documents</div>
+    <div class="btn btn-info btn-sm mr-2" (click)="countDocuments()"> Count Documents</div>
+    <div class="btn btn-info btn-sm mr-2" (click)="getByRange()"> Get By Range</div>
+    <div class="btn btn-info btn-sm mr-2" (click)="getAllJobs()"> Get All Jobs</div>
+  </div>
+</div>
+
+<!-- MESSAGE -->
+<div class="row">
+    <div class="col-12 mb-3">
+        <span class="badge badge-dark p-2"> {{message}}</span>
+    </div>
+</div>
+
+<!-- text -->
+<div class="row h-75">
+    <div class="col-12 h-100">
+        <div class="alert alert-primary ">
+            <div class="card ">
+              <div class="card-body">
+                <pre>{{text}}</pre>
+              </div>
+            </div>
+          </div>
+    </div>
+</div>
