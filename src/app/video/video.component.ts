@@ -1,7 +1,7 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import PouchDB from 'pouchdb';
-import { JsonPipe } from '@angular/common';
+
 
 @Component({
   selector: 'app-video',
@@ -37,13 +37,13 @@ export class VideoComponent implements OnInit {
   }
   fetchAndStoreFromNetwork(video, index) {
 
-    this.message += ` - Fetching ${video.name} video. Index `;
+    this.message += ` - Fetching ${video.name} video. Index ${index} `;
     fetch(`../../assets/video-store/${video.name}.mp4`)
       .then(response => {
         return response.blob();
       })
       .then(blobvideo => {
-        this.message += `Size ${(video.size / Math.pow(1024, 2)).toFixed(2)}mb,  type=${video.type}`;
+        this.message += `Size ${(blobvideo.size / Math.pow(1024, 2)).toFixed(2)}mb,  type=${blobvideo.type}`;
        
         console.log(video);
 
@@ -82,25 +82,52 @@ export class VideoComponent implements OnInit {
     // Dohvaćanje sa mreže kao blob
     // spremanje zatim kao attachment
     // Spramanje u Indexeddb
-    let record = {
-      _id: `video_0${index}`,
-      _attachments: {
-        'video' : {
-          content_type: `video/mp4`,
-          data: video
-        }
-      },
-      name: `${video.name}`
-    };
+    // let record = {
+    //   _id: `video_0${index}`,
+    //   _attachments: {
+    //     'video' : {
+    //       content_type: `video/mp4`,
+    //       data: video
+    //     }
+    //   },
+    //   name: `${this.videos[index].name}`
+    // };
     this.db
-      .put(record)
+      .putAttachment(`video_0${index}`, 'elf.mp4', video, 'video/mp4')
       .then(r => {
-        console.log('PUt video');
+        console.log('Put video in Attachment');
         console.log(r);
       }).catch(err => {
         console.log(`ERROR: ${err}`);
       });
 
+  }
+  playVideoFromPouchDb(id){
+    this.message= `Play video:  ${id}`;
+    this.db
+      .getAttachment(id, 'elf.mp4')
+      .then(blob => {
+        //this.text= JSON.stringify(doc);
+        // this.displayVideo(blob, 'naslov');
+        const videoUrl = URL.createObjectURL(blob);
+         this.videopath = this.sanitizier.bypassSecurityTrustUrl(videoUrl);
+      })
+      .catch(err => {
+        this.text = JSON.stringify(err, null, '\t');
+      });
+  }
+  deleteVideoFromPouchDb(id){
+    this.message = `Delete video id: ${id}`;
+    this.db
+      .get(id)
+      .then(doc =>{
+        // DELETE DOCUMENT
+        return this.db.remove(doc)
+      })
+      .then(r => {
+        this.message += ' Job deleted.';
+        this.text = JSON.stringify(r, null, '\t');
+      })
   }
 
   displayVideo(mp4Blob, title) {
