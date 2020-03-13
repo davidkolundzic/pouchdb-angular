@@ -80,17 +80,17 @@ export class CRUDComponent implements OnInit {
       })
       .catch(err => this.message = err);
   }
-  compactDB(){
-    this.text= '';
+  compactDB() {
+    this.text = '';
     this.message = '';
     if (this.db) {
       this.db
         .compact()
-        .then(res =>{
+        .then(res => {
           this.message = 'Database compacted';
           this.text = JSON.stringify(res, null, '\n');
         })
-        .catch(err => this.message=err)
+        .catch(err => this.message = err);
     } else {
       this.message = 'Please open the databse first';
     }
