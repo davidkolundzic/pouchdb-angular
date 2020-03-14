@@ -1,11 +1,41 @@
 <!-- BUTTONS -->
 <div class="row">
-  <div class="col-12 mt-3 mb-3">
-    <div class="btn btn-info btn-sm mr-2" (click)="fetchFromNetwork(videos[3])"> Play Video From Network</div>
-    <div class="btn btn-info btn-sm mr-2" (click)="fetchAndStoreFromNetwork(videos[1], index=9)"> Save video to Indexeddb Video</div>
-    <div class="btn btn-info btn-sm mr-2" (click)="deleteVideoFromPouchDb('video_0')"> Delete Video from Indexeddb Video</div>
-    <div class="btn btn-info btn-sm mr-2" (click)="playVideoFromPouchDb('video_09')"> Play Video from Indexeddb Video</div>
-    
+  <div class="col-12 mb-3">
+    <div class="btn btn-info btn-sm mr-2 mt-3" (click)="fetchFromNetwork(videos[3])"> Play Video From Network</div>
+    <div class="btn btn-info btn-sm mr-2 mt-3" (click)="fetchAndStoreFromNetwork(videos[1], index=9)"> Save video to
+      Indexeddb Video</div>
+    <div class="btn btn-info btn-sm mr-2 mt-3" (click)="deleteVideoFromPouchDb('video_0')"> Delete Video from Indexeddb Video
+    </div>
+    <div class="btn btn-info btn-sm mr-2 mt-3" (click)="playVideo(videos[6])"> Play Video
+    </div>
+
+  </div>
+</div>
+<div class="row">
+  <div class="col-12 mb-3">
+    <ul class="list-group">
+      <li *ngFor="let item of videos; let i = index;" class="list-group-item">
+        <div class="row">
+          <div class="col-1"> {{item.name}}</div>
+          <div class="col-1">
+            <!-- <div class="btn btn-outline-primary btn-sm" (click)="playVideoFromPouchDb('video_0'+i)">Play</div> -->
+            <div class="btn btn-outline-primary btn-sm" (click)="playVideo(item)">Play</div>
+          </div>
+          <div class="col-1">
+            <div class="btn btn-outline-primary border-0 btn-sm"><i class="fab fa-leanpub fa-2x"></i></div>
+          </div>
+          <div class="col-1 ml-auto">
+            <div *ngIf="!item.stored" class="btn btn-outline-secondary btn-sm" (click)="fetchAndStoreFromNetwork(videos[i], index=i)">
+              <i class="fas fa-cloud-download-alt" title="spremi lokalno"></i>             
+            </div>
+            <div *ngIf="item.stored" class="btn btn-outline-secondary btn-sm" (click)="fetchAndStoreFromNetwork(videos[i], index=i)">
+              <i class="fas fa-broom" title="uloni sa lokalne pohrane"></i>             
+            </div>
+          </div>
+        </div>
+      </li>
+    </ul>
+
   </div>
 </div>
 
@@ -13,13 +43,21 @@
 <div class="row">
   <div class="col-12 mb-3">
     <span class="badge badge-dark p-2"> {{message}} </span>
+    <span class="badge badge-primary p-2 ml-3">{{messageTime | number}}</span>
   </div>
 </div>
 <div class="row">
   <div class="col-3">
     <div *ngIf="videopath">
-      <video class="img-fluid" id="myvideo" controls>
-        <source [src]="videopath" type="video/mp4">
+      <video class="img-fluid" 
+      #player
+        id="myvideo" controls
+        (loadeddata)="startVideo(e)"
+        (play)="playStarted()"
+        (timeupdate)="time($event.target)"
+        (progress)= "progress($event)"        
+        preload="auto">
+        <source  [src]="videopath" type="video/mp4">
       </video>
     </div>
   </div>

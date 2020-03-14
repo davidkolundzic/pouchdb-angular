@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, ViewChild, ElementRef, AfterViewInit, } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import PouchDB from 'pouchdb';
 
@@ -8,20 +8,24 @@ import PouchDB from 'pouchdb';
   templateUrl: './video.component.html',
   styleUrls: ['./video.component.css']
 })
-export class VideoComponent implements OnInit {
+export class VideoComponent implements OnInit, AfterViewInit {
 
   db: any;
+  messageTime: string;
   message: string;
   text: any;
   videopath: any;
 
+  storedVideos: any;
+
   videos = [
-    { name: 'crystal' },
-    { name: 'elf' },
-    { name: 'frog' },
-    { name: 'monster' },
-    { name: 'pig' },
-    { name: 'rabbit' }
+    { id: 'video_00', name: 'crystal', stored: false },
+    { id: 'video_01', name: 'elf', stored: false },
+    { id: 'video_02', name: 'frog', stored: false },
+    { id: 'video_03', name: 'monster', stored: false },
+    { id: 'video_04', name: 'pig', stored: false },
+    { id: 'video_05', name: 'rabbit', stored: false },
+    { id: 'video_06', name: 'elf2', stored: false }
   ];
 
   constructor(private changeDetectorRef: ChangeDetectorRef, private sanitizier: DomSanitizer) {
@@ -31,9 +35,39 @@ export class VideoComponent implements OnInit {
     });
   }
 
+  @ViewChild('player', { static: false }) player: ElementRef;
+
   ngOnInit() {
     // this.videopath = '';
     // this.fetchFromNetwork(this.videos[1]);
+  }
+
+  ngAfterViewInit() {
+    this.checkWhichInPouchDb();
+  }
+  checkWhichInPouchDb() {
+    const options = {
+      startkey: 'video_',
+      endkey: 'video_\ufff0'
+    };
+    this.db
+      .allDocs(options)
+      .then(r => {
+        console.log('U bazi su', r);
+        r.rows.map(row => {
+          this.videos.find(c => c.id === row.id).stored = true;
+        });
+      })
+      .catch(err => {
+        console.log(err);
+      });
+
+  }
+  storedInPouchdb(media, index) {
+    let model = true;
+
+
+    return model;
   }
   fetchAndStoreFromNetwork(video, index) {
 
@@ -44,7 +78,7 @@ export class VideoComponent implements OnInit {
       })
       .then(blobvideo => {
         this.message += `Size ${(blobvideo.size / Math.pow(1024, 2)).toFixed(2)}mb,  type=${blobvideo.type}`;
-       
+
         console.log(video);
 
         this.addVideoToPouchDb(blobvideo, index);
@@ -78,7 +112,7 @@ export class VideoComponent implements OnInit {
   //     });
   // }
   addVideoToPouchDb(video, index) {
-    console.log('POČNI SPREMANJE '+ index);
+    console.log('POČNI SPREMANJE ' + index);
     // Dohvaćanje sa mreže kao blob
     // spremanje zatim kao attachment
     // Spramanje u Indexeddb
@@ -102,34 +136,69 @@ export class VideoComponent implements OnInit {
       });
 
   }
-  playVideoFromPouchDb(id){
-    this.message= `Play video:  ${id}`;
+  testParams(video, i) {
+    this.message = `Name: ${video.name}, i: ${i}`;
+  }
+  playVideo(video) {
+    console.log('PLAY VIDEO');
+    console.log(video);
+   // this.message = 'Index: ' + this.videos.findIndex(v => v.name === video.name);
+   // this.message += ' Name ' + this.videos.find(v => v.name === video.name).name;
+    if (video) {
+     // const index = this.videos.findIndex(v => v.name === video.name);
+      this.db
+        .get(`${video.id}`)
+        .then(res => {
+          this.message += ` In db: true`;
+          this.text = JSON.stringify(res, null, '\n');
+          this.playVideoFromPouchDb(video.id)
+        })
+        .catch(err => {
+          if (err.name === 'not_found') {
+            this.videopath = `../../assets/video-store/${video.name}.mp4`;
+            this.player.nativeElement.load();
+          }
+        })
+        .catch(err => {
+          this.message += 'Do not exists';
+        });
+    } else {
+      console.log('Empty name');
+    }
+
+
+  }
+  playVideoFromPouchDb(id) {
+    this.message = `Play video:  ${id}`;
     this.db
       .getAttachment(id, 'elf.mp4')
       .then(blob => {
-        //this.text= JSON.stringify(doc);
-        // this.displayVideo(blob, 'naslov');
         const videoUrl = URL.createObjectURL(blob);
-         this.videopath = this.sanitizier.bypassSecurityTrustUrl(videoUrl);
+        this.videopath = this.sanitizier.bypassSecurityTrustUrl(videoUrl);
+        // this.changeDetectorRef.detectChanges();
+        this.player.nativeElement.load();
+        //this.player.nativeElement.play();
       })
       .catch(err => {
         this.text = JSON.stringify(err, null, '\t');
       });
   }
-  deleteVideoFromPouchDb(id){
+  deleteVideoFromPouchDb(id) {
     this.message = `Delete video id: ${id}`;
     this.db
       .get(id)
-      .then(doc =>{
+      .then(doc => {
         // DELETE DOCUMENT
-        return this.db.remove(doc)
+        return this.db.remove(doc);
       })
       .then(r => {
         this.message += ' Job deleted.';
         this.text = JSON.stringify(r, null, '\t');
-      })
+      });
   }
 
+
+  /** vanillajs only for testing purpouse */
   displayVideo(mp4Blob, title) {
     // Create object URLs out of the blobs
     let section = document.querySelector('section');
@@ -151,4 +220,16 @@ export class VideoComponent implements OnInit {
     video.play();
   }
 
+  startVideo(e) {
+    this.player.nativeElement.play();
+  }
+  playStarted() {
+    this.message = 'Player started';
+  }
+  time(ev) {
+    this.messageTime = ev.currentTime;
+  }
+  progress(e) {
+    console.log(e);
+  }
 }
