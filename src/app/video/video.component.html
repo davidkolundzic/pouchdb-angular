@@ -21,6 +21,9 @@
             <!-- <div class="btn btn-outline-primary btn-sm" (click)="playVideoFromPouchDb('video_0'+i)">Play</div> -->
             <div class="btn btn-outline-primary btn-sm" (click)="playVideo(item)">Play</div>
           </div>
+          <div class="col-1">
+            <div class="btn btn-outline-primary border-0 btn-sm"><i class="fab fa-leanpub fa-2x"></i></div>
+          </div>
           <div class="col-1 ml-auto">
             <div *ngIf="!item.stored" class="btn btn-outline-secondary btn-sm" (click)="fetchAndStoreFromNetwork(videos[i], index=i)">
               <i class="fas fa-cloud-download-alt" title="spremi lokalno"></i>             
