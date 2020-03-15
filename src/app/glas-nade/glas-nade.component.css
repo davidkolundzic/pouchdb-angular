@@ -1,0 +1,10 @@
+.video-container>.boxcast-boxoffice.boxcast-theme-light.boxcast-ar-16_9.boxcast-size-sm>.boxcast-well-container{
+    display:none!important;
+}
+.boxcast-theme-light.boxcast-well{
+    display:none;
+}
+
+body, h4{
+    color:red
+}

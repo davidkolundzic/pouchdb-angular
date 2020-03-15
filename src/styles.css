@@ -1,2 +1,8 @@
 /* You can add global styles to this file, and also import other style files */
 html,body{height:100%;}
+.boxcast-theme-light.boxcast-well{
+    display:none;
+}
+.boxcast-well{
+    display: none;
+}

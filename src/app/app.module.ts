@@ -6,13 +6,15 @@ import { AppComponent } from './app.component';
 import { CRUDComponent } from './crud/crud.component';
 import { BulkComponent } from './bulk/bulk.component';
 import { VideoComponent } from './video/video.component';
+import { GlasNadeComponent } from './glas-nade/glas-nade.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     CRUDComponent,
     BulkComponent,
-    VideoComponent
+    VideoComponent,
+    GlasNadeComponent
   ],
   imports: [
     BrowserModule,

@@ -1,28 +1,30 @@
 <div class="container">
   <h1 class="text-danger">Pouch DB</h1>
   <div class="row">
-    <div class="col-12">
-      <h4>CRUD operation 
+    <div class="col-6 px-0">
+      <div class="col-12">
+        <h4>CRUD operation
           <a routerLink="crud" routerLinkActive='active' class="btn btn-light btn-sm mr-3"> View </a>
-      </h4>
-      
+        </h4>
+      </div>
+      <div class="col-12 mt-3">
+        <h4>Bulk operation
+          <a routerLink='bulk' routerLinkActive='active' class="btn btn-light btn-sm mr-3"> View </a>
+        </h4>
+      </div>
+      <div class="col-12 mt-3">
+        <h4>Store media
+          <a routerLink='video' routerLinkActive='active' class="btn btn-light btn-sm mr-3"> Video</a>
+        </h4>
+      </div>
     </div>
-  </div>
-  <div class="row">
-    <div class="col-12 mt-3">
-      <h4>Bulk operation
-        <a routerLink='bulk' routerLinkActive='active' class="btn btn-light btn-sm mr-3"> View </a>
-      </h4>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-12 mt-3">
-      <h4>Store media 
-        <a routerLink='video' routerLinkActive='active' class="btn btn-light btn-sm mr-3"> Video</a>
+    <div class="col-6">
+      <h4>Store media
+        <a routerLink='uzivo' routerLinkActive='active' class="btn btn-light btn-sm mr-3"> Live</a>
       </h4>
     </div>
   </div>
 </div>
-<div class="container-fluid border h-75 w-100">
-  <router-outlet> </router-outlet>
-</div>
+  <div class="container-fluid border w-100">
+    <router-outlet> </router-outlet>
+  </div>
